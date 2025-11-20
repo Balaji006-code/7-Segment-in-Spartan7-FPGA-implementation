@@ -51,60 +51,67 @@ To design and simulate a Verilog HDL seven-segment display driver that converts 
 ## Verilog Code for Seven-Segment Display  
 
 ```verilog
-module bcd_to_7segment(
-    input  [3:0] bcd,
-    output reg [6:0] seg,
-    output reg [3:0] an
-);
+`timescale 1ns / 1ps
+module bcd_hardware(bcd,seg,an);
+input [15:12] bcd;
+output reg [6:0] seg;
+output reg [3:0] an;
 
-always @(*) 
-begin
-    an <= 4'b1110;
-    case (bcd)
-        4'b0000: seg = 7'b1000000;
-        4'b0001: seg = 7'b1111001;
-        4'b0010: seg = 7'b0100100;
-        4'b0011: seg = 7'b0110000;
-        4'b0100: seg = 7'b0011001;
-        4'b0101: seg = 7'b0010010;
-        4'b0110: seg = 7'b0000010;
-        4'b0111: seg = 7'b1111000;
-        4'b1000: seg = 7'b0000000;
-        4'b1001: seg = 7'b0010000;
-        default: seg = 7'b1111111;
-    endcase
+always @ (bcd) begin
+an=4'b0010;
+case (bcd)
+4'b0000: seg = 7'b1000000;
+4'b0001: seg = 7'b1111001;
+4'b0010: seg = 7'b0100100;
+4'b0011: seg = 7'b0110000;
+4'b0100: seg = 7'b0011001;
+4'b0101: seg = 7'b0010010;
+4'b0110: seg = 7'b0000010;
+4'b0111: seg = 7'b1111000;
+4'b1000: seg = 7'b0000000;
+4'b1001: seg = 7'b0010000;
+4'b1010: seg = 7'b0001000;
+4'b1011: seg = 7'b0000011;
+4'b1100: seg = 7'b1000110;
+4'b1101: seg = 7'b0100001;
+4'b1110: seg = 7'b0000110;
+4'b1111: seg = 7'b0001110;
+default: seg = 7'b1111111;
+endcase
 end
-
 endmodule
 
+ 
 ```
 ## Constraint file for Seven-Segment Display
 ```
 ## DIP SWITCHES (SW0-SW3 for BCD input)
-set_property -dict { PACKAGE_PIN V2 IOSTANDARD LVCMOS33 } [get_ports {bcd[0]}]
-set_property -dict { PACKAGE_PIN U2 IOSTANDARD LVCMOS33 } [get_ports {bcd[1]}]
-set_property -dict { PACKAGE_PIN U1 IOSTANDARD LVCMOS33 } [get_ports {bcd[2]}]
-set_property -dict { PACKAGE_PIN T2 IOSTANDARD LVCMOS33 } [get_ports {bcd[3]}]
+set_property -dict {PACKAGE_PIN M1 IOSTANDARD LVCMOS33} [get_ports {bcd[12]}]
+set_property -dict {PACKAGE_PIN L1 IOSTANDARD LVCMOS33} [get_ports {bcd[13]}]
+set_property -dict {PACKAGE_PIN K2 IOSTANDARD LVCMOS33} [get_ports {bcd[14]}]
+set_property -dict {PACKAGE_PIN K1 IOSTANDARD LVCMOS33} [get_ports {bcd[15]}]
 
 ## 7-SEGMENT DISPLAY (a,b,c,d,e,f,g,dp)
-set_property -dict { PACKAGE_PIN D7 IOSTANDARD LVCMOS33 } [get_ports {seg[0]}]
-set_property -dict { PACKAGE_PIN C5 IOSTANDARD LVCMOS33 } [get_ports {seg[1]}]
-set_property -dict { PACKAGE_PIN A5 IOSTANDARD LVCMOS33 } [get_ports {seg[2]}]
-set_property -dict { PACKAGE_PIN B7 IOSTANDARD LVCMOS33 } [get_ports {seg[3]}]
-set_property -dict { PACKAGE_PIN A7 IOSTANDARD LVCMOS33 } [get_ports {seg[4]}]
-set_property -dict { PACKAGE_PIN D6 IOSTANDARD LVCMOS33 } [get_ports {seg[5]}]
-set_property -dict { PACKAGE_PIN B5 IOSTANDARD LVCMOS33 } [get_ports {seg[6]}]
-set_property -dict { PACKAGE_PIN A6 IOSTANDARD LVCMOS33 } [get_ports {seg[7]}]
+set_property -dict {PACKAGE_PIN F4 IOSTANDARD LVCMOS33} [get_ports {seg[0]}]
+set_property -dict {PACKAGE_PIN J3 IOSTANDARD LVCMOS33} [get_ports {seg[1]}]
+set_property -dict {PACKAGE_PIN D2 IOSTANDARD LVCMOS33} [get_ports {seg[2]}]
+set_property -dict {PACKAGE_PIN C2 IOSTANDARD LVCMOS33} [get_ports {seg[3]}]
+set_property -dict {PACKAGE_PIN B1 IOSTANDARD LVCMOS33} [get_ports {seg[4]}]
+set_property -dict {PACKAGE_PIN H4 IOSTANDARD LVCMOS33} [get_ports {seg[5]}]
+set_property -dict {PACKAGE_PIN D1 IOSTANDARD LVCMOS33} [get_ports {seg[6]}]
+set_property -dict {PACKAGE_PIN C1 IOSTANDARD LVCMOS33} [get_ports {seg[7]}]
 
 ## ANODE CONTROL (active-low)
-set_property -dict { PACKAGE_PIN D5 IOSTANDARD LVCMOS33 } [get_ports {an[0]}]
-set_property -dict { PACKAGE_PIN C4 IOSTANDARD LVCMOS33 } [get_ports {an[1]}]
-set_property -dict { PACKAGE_PIN C7 IOSTANDARD LVCMOS33 } [get_ports {an[2]}]
-set_property -dict { PACKAGE_PIN A8 IOSTANDARD LVCMOS33 } [get_ports {an[3]}]
+set_property -dict {PACKAGE_PIN H3 IOSTANDARD LVCMOS33} [get_ports {an[0]}]
+set_property -dict {PACKAGE_PIN J4 IOSTANDARD LVCMOS33} [get_ports {an[1]}]
+set_property -dict {PACKAGE_PIN F3 IOSTANDARD LVCMOS33} [get_ports {an[2]}]
+set_property -dict {PACKAGE_PIN E4 IOSTANDARD LVCMOS33} [get_ports {an[3]}]
 ```
 ## FPGA Implementation Output
 
-<img width="782" height="540" alt="image" src="https://github.com/user-attachments/assets/6d549830-34b0-4916-9370-fc680e71f881" />
+
+![WhatsApp Image 2025-11-20 at 17 31 33_26928560](https://github.com/user-attachments/assets/e893f864-ddbf-481b-bb8b-4135678c1ba7)
+
 
 
 ---
